@@ -4,8 +4,8 @@ use super::*;
 pub struct Block {
     pub index: u32,
     pub timestamp: u64,
-    pub prev_block_hash: BlockHash,
-    pub hash: BlockHash,
+    pub prev_block_hash: Hash,
+    pub hash: Hash,
     pub nonce: u64,
     pub payload: String,
 }
@@ -18,7 +18,7 @@ impl Debug for Block {
 
 
 impl Block {
-    pub fn new(index: u32, timestamp: u64, prev_block_hash: BlockHash, nonce: u64, payload: String) -> Self {
+    pub fn new(index: u32, timestamp: u64, prev_block_hash: Hash, nonce: u64, payload: String) -> Self {
         Block {
             index,
             timestamp,
@@ -30,3 +30,17 @@ impl Block {
     }
 }
 
+impl Hashable for Block {
+    fn bytes(&self) -> Vec<u8> {
+        let mut bytes = vec![];
+
+        bytes.extend(&u32_bytes(&self.index));
+        bytes.extend(&u64_bytes(&self.timestamp));
+        bytes.extend(&self.prev_block_hash);
+        bytes.extend(&u64_bytes(&self.nonce));
+        bytes.extend(self.payload.as_bytes());
+
+        bytes
+
+    }
+}

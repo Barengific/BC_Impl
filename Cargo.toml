@@ -1,9 +1,20 @@
 [package]
 name = "BC_Impl"
 version = "0.1.0"
+authors = ["Barengific"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+name = "bclib"
+path = "src/lib.rs"
+
+[[bin]]
+name = "bc"
+path = "src/main.rs"
+
 [dependencies]
 hex = "0.3.2"
+crypto-hash = "0.3.3"
+
