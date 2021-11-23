@@ -1,50 +1,67 @@
 use bclib::*;
 
-fn main() {
+fn main () {
     let difficulty = 0x00ffffffffffffffffffffffffffffff;
-//0x0fffffffffffffffffffffffffffffff
 
-    let mut block = Block::new(0,0, vec![0; 32], 0, "Genesis block!".to_owned(), difficulty);
-    
+    let mut genesis_block = Block::new(0, now(), vec![0; 32], vec![
+        Transaction {
+            inputs: vec![ ],
+            outputs: vec![
+                transaction::Output {
+                    to_addr: "A".to_owned(),
+                    value: 21,
+                },
+                transaction::Output {
+                    to_addr: "B".to_owned(),
+                    value: 3,
+                },
+            ],
+        },
+    ], difficulty);
+
+    genesis_block.mine();
+
+    println!("Mined genesis block {:?}", &genesis_block);
+
+    let mut last_hash = genesis_block.hash.clone();
+
+    let mut bc = Bc::new();
+
+    bc.update_with_block(genesis_block).expect("Failed to add genesis block");
+
+    let mut block = Block::new(1, now(), last_hash, vec![
+        Transaction {
+            inputs: vec![ ],
+            outputs: vec![
+                transaction::Output {
+                    to_addr: "C".to_owned(),
+                    value: 10,
+                },
+            ],
+        },
+        Transaction {
+            inputs: vec![
+                bc.blocks[0].transactions[0].outputs[0].clone(),
+            ],
+            outputs: vec![
+                transaction::Output {
+                    to_addr: "A".to_owned(),
+                    value: 5,
+                },
+                transaction::Output {
+                    to_addr: "B".to_owned(),
+                    value: 2,
+                },
+            ],
+        },
+    ], difficulty);
+
     block.mine();
-    println!("Mined Genesis block {:?}", &block);
 
-    let mut last_hash = block.hash.clone();
+    println!("Mined block {:?}", &block);
 
-    let mut bc = Bc{
-        blocks: vec![block],
-    };
+    last_hash = block.hash.clone();
 
-    println!("verify: {}", &bc.verify());
-
-    for i in 1..=10{
-        let mut block = Block::new(i, now(), last_hash, 0, "Another block".to_owned(), difficulty);
-    
-        block.mine();
-        println!("{:?}", &block);
-
-        last_hash = block.hash.clone();
-
-        bc.blocks.push(block);
-
-        println!("verify: {}", &bc.verify());
-    }
-
-    bc.blocks[3].index = 4;
-
-    println!("verify: {}", &bc.verify());
-
-    // block.hash = block.hash();
-
-    // println!("{:?}", &block);
-
-    // block.mine();
-
-    // println!("{:?}", &block);
+    bc.update_with_block(block).expect("Failed to add block");
 }
-
-
-
-
-
 
