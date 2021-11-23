@@ -2,13 +2,14 @@ use bclib::*;
 
 fn main() {
     println!("Hello, world!");
-    let mut block = Block::new(0,0, vec![0; 32], 0, "Genesis block".to_owned());
+    let mut block = Block::new(0,0, vec![0; 32], 0, "Genesis block!".to_owned(), 0x00ffffffffffffffffffffffffffffff);
+    //0x0fffffffffffffffffffffffffffffff
 
-    let h = block.hash();
+    block.hash = block.hash();
 
-    println!("{:?}", &h);
+    println!("{:?}", &block);
 
-    block.hash = h;
+    block.mine();
 
     println!("{:?}", &block);
 }
