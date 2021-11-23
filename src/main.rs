@@ -1,23 +1,12 @@
+use blockchainlib::*;
+
 fn main() {
     println!("Hello, world!");
+    let block = Block::new(0,0, vec![0; 32], 0, "Genesis block".to_owned());
 }
 
-pub struct Block{
-    pub index: u32,
-    pub timestamp: u64,
-    pub prev_block_hash: BlockHash,
-    pub hash: BlockHash,
-    pub payload: String,
-}
 
-impl Block{
-    pub fn new (index: u32, timestamp: u64, prev_block_hash: [u8; 16], payload: String) -> self{
-        Block{
-            index,
-            timestamp,
-            prev_block_hash,
-            hash: [0;16],
-            payload,
-        }
-    }
-}
+
+
+
+
